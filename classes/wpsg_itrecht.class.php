@@ -47,9 +47,20 @@
 		
 		} // function admin_menu()
 		
+		private function get_plugin_version($file)
+		{
+
+			if (!function_exists('get_plugins')) require_once(ABSPATH.'wp-admin/includes/plugin.php');
+			
+			$plugin_folder = get_plugins('/'.plugin_basename(dirname(__FILE__).'/../../'));
+						
+			return  $plugin_folder[$file]['Version'];
+			
+		}
+		
 		function wp_loaded()
 		{
-			
+		
 			global $wpdb;
 			
 			if (wpsgitrecht_isSizedString($_REQUEST['wpsgitrecht_action'], 'genKey') && is_admin())
@@ -58,7 +69,7 @@
 				die($this->getNewApiKey());
 				
 			}
-			if (wpsgitrecht_isSizedString($_REQUEST['wpsgitrecht_action'], 'api') && wpsgitrecht_isSizedString($_REQUEST['xml']))
+			if (wpsgitrecht_isSizedString($_REQUEST['wpsgitrecht_action'], 'api'))
 			{
 								
 				$xml = simplexml_load_string(stripslashes($_REQUEST['xml']));
@@ -83,6 +94,27 @@
 					
 					$arPageTypes = $this->getPageTypes();
 					
+					if ($arPageTypes[$request['rechtstext_type']]['needPDF'] === true)
+					{
+						
+						$arHeader = get_headers($request['rechtstext_pdf_url']);
+						
+						$bPDFHeader = false;
+						
+						foreach ($arHeader as $h)
+						{
+							
+							if (strpos($h, 'application/pdf') !== false)
+							{
+								
+								$bPDFHeader = true; break;
+								
+							}
+							
+						} 
+						
+					}
+					
 					// error 1 - Schnittstellen-Version (Versionsnummer api_version) ist unterschiedlich
 					if ($request['api_version'] != $this->api_version) { $returnCode = '1'; } 
 					else if ($request['user_auth_token'] != $this->getAPIKey()) { $returnCode = '3'; }
@@ -91,7 +123,7 @@
 					else if (!wpsgitrecht_isSizedString($request['rechtstext_html']) || strlen($request['rechtstext_html']) < 50) { $returnCode = '6'; }
 					else if (!wpsgitrecht_isSizedString($request['rechtstext_language']) || ($request['rechtstext_language'] != 'de')) { $returnCode = '9'; }
 					else if (!in_array($request['action'], array('push'))) { $returnCode = '10'; }
-					else if ($arPageTypes[$request['rechtstext_type']]['needPDF'] === true && trim($request['rechtstext_pdf_url']) === '') { $returnCode = '7'; }			
+					else if ($arPageTypes[$request['rechtstext_type']]['needPDF'] === true && (trim($request['rechtstext_pdf_url']) === '' || trim(file_get_contents($request['rechtstext_pdf_url'])) == '' || $bPDFHeader !== true)) { $returnCode = '7'; }			
 					else if ($arPageTypes[$request['rechtstext_type']]['needPDF'] === true && md5(file_get_contents($request['rechtstext_pdf_url'])) != $request['rechtstext_pdf_md5hash']) { $returnCode = '8'; }		 
 					else 
 					{
@@ -141,20 +173,16 @@
 				}
 				
 				// ModulVersion
-				$modul_data = get_plugin_data(dirname(__FILE__).'/../wpshopgermany-itrecht.php');
-				
 				$node_module_version = $doc->createElement('meta_modulversion');
-				$node_module_version->appendChild($doc->createTextNode($modul_data['Version']));
+				$node_module_version->appendChild($doc->createTextNode($this->get_plugin_version('wpshopgermany-itrecht/wpshopgermany-itrecht.php')));
 				
 				$node_response->appendChild($node_module_version);
 				
 				if (function_exists('is_plugin_active') && is_plugin_active('wpshopgermany/wpshopgermany.php'))
 				{
-					
-					$shop_data = get_plugin_data(dirname(__FILE__).'/../../wpshopgermany/wpshopgermany.php');
 
 					$node_shop_version = $doc->createElement('meta_shopversion');
-					$node_shop_version->appendChild($doc->createTextNode($shop_data['Version']));
+					$node_shop_version->appendChild($doc->createTextNode($this->get_plugin_version('wpshopgermany/wpshopgermany.php')));
 					
 					$node_response->appendChild($node_shop_version);
 					
