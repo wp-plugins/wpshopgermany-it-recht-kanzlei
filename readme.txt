@@ -23,7 +23,7 @@ Zur Installation beachten Sie bitte folgende Schritte:
 1. Die Plugindateien nach wp-content/plugins/wpshopgermany-itrecht kopieren, oder über das Wordpress Backend: Plugins > Installieren > Hochladen die ZIP Datei hochladen.
 2. Das Plugin im Plugin Menü von Wordpress aktivieren.
 3. Seiten für die Texte anlegen. (Im Wordpress Menü "Seiten")
-4. Die Accountdaten von der [IT-Recht Kanzlei München](http://www.it-recht-kanzlei.de/Service/rechtstexte_fuer_onlineshops.php?partner_id=150 "IT-Recht Kanzlei - Rechtstexte für den wpShopGermany") in die Einstellungen unter Einstellungen -> [IT-Recht Kanzlei München](http://www.it-recht-kanzlei.de/Service/rechtstexte_fuer_onlineshops.php?partner_id=150 "IT-Recht Kanzlei - Rechtstexte für den wpShopGermany") eintragen.
+4. Den API-Token von der [IT-Recht Kanzlei München](http://www.it-recht-kanzlei.de/Service/rechtstexte_fuer_onlineshops.php?partner_id=150 "IT-Recht Kanzlei - Rechtstexte für den wpShopGermany") in die Einstellungen unter Einstellungen -> [IT-Recht Kanzlei München](http://www.it-recht-kanzlei.de/Service/rechtstexte_fuer_onlineshops.php?partner_id=150 "IT-Recht Kanzlei - Rechtstexte für den wpShopGermany") eintragen.
 5. Die Seiten auswählen auf denen die Texte von der [IT-Recht Kanzlei München](http://www.it-recht-kanzlei.de/Service/rechtstexte_fuer_onlineshops.php?partner_id=150 "IT-Recht Kanzlei - Rechtstexte für den wpShopGermany") eingesetzt werden sollen, oder neue anlegen.
 5. Button "Speichern" betätigen.
 
